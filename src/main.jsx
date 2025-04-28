@@ -6,7 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import store from "./store";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <BrowserRouter basename="/VidShuffle">
+  <BrowserRouter basename="/">
     <Provider store={store}>
       <App />
     </Provider>
