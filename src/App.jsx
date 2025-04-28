@@ -8,19 +8,9 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route
-          exact
-          path="/VidShuffle/"
-          element={<Home />}
-        />
-        <Route
-          path="/playlist/:id"
-          element={<Playlist />}
-        />
-        <Route
-          path="*"
-          element={<h1>Error 404</h1>}
-        />
+        <Route exact path="/" element={<Home />} />
+        <Route path="/playlist/:id" element={<Playlist />} />
+        <Route path="*" element={<h1>Error 404</h1>} />
       </Routes>
     </div>
   );
