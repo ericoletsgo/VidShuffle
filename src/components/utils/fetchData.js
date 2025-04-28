@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const fetchData = async (id) => {
   let responseArr = [];
-  const baseApiUrl = "http://localhost:5000/api";
+  const baseApiUrl = "https://vid-shuffle.vercel.app/api";
 
   try {
     const response = await axios.get(`${baseApiUrl}/playlist`, {
