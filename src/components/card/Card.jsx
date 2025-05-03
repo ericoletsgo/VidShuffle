@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import MersenneTwister from "mersenne-twister";
+
 const Card = ({
   songs,
   addSongs,
@@ -9,10 +10,22 @@ const Card = ({
   currentSong,
   nextSong,
 }) => {
+  const refs = songs.reduce((acc, value) => {
+    acc[value.snippet.resourceId.videoId] = React.createRef();
+    return acc;
+  }, {});
+
+  useEffect(() => {
+    if (player.currentSong && refs[player.currentSong]?.current) {
+      refs[player.currentSong].current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [player.currentSong]);
 
   useEffect(() => {
     if (player.isShuffleActive === true) {
-
       shuffleisActive();
     }
   }, [player.isShuffleActive]);
@@ -29,13 +42,11 @@ const Card = ({
 
     addSongs(shuffleArr);
 
-    
     currentSong(shuffleArr[0].snippet.resourceId.videoId);
     nextSong(shuffleArr[1].snippet.resourceId.videoId);
   };
 
   const handleClick = (id) => {
-    
     const currIndex = songs.findIndex((ele) => {
       return ele.snippet?.resourceId.videoId === id;
     });
@@ -47,10 +58,14 @@ const Card = ({
   const song = songs?.map((ele) =>
     ele.snippet.title !== "Private video" &&
     ele.snippet.title !== "Deleted video" ? (
-      <ol
-        className="cardContent "
+      <li
+        ref={refs[ele.snippet.resourceId.videoId]}
+        id={`${ele.snippet.resourceId.videoId}`}
+        className={`cardContent ${
+          player.currentSong === ele.snippet.resourceId.videoId ? "playing" : ""
+        }`}
         onClick={() => handleClick(ele.snippet.resourceId.videoId)}
-        key={ele.snippet.resourceId.videId + ele.snippet.title}
+        key={ele.snippet.resourceId.videoId + ele.snippet.title}
       >
         <img
           src={ele.snippet.thumbnails.default?.url}
@@ -58,19 +73,18 @@ const Card = ({
           height="50px"
           width="auto"
         />
-        <div className='cardText'>
+        <div className="cardText">
           <label className="cardTitle">{ele.snippet.title}</label>
           <br />
           <p className="cardArtist"> {ele.snippet.videoOwnerChannelTitle}</p>
         </div>
-        {/* <button className="cursor-pointer">X</button> */}
-      </ol>
+      </li>
     ) : null
   );
+
   return (
     <div className="cardContainer">
-      <div className=""></div>
-      {song}
+      <ul className="ulListCards">{song}</ul>
     </div>
   );
 };
