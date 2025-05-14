@@ -8,6 +8,8 @@ import {
   MdOutlineSkipNext,
   MdSkipPrevious,
   MdSkipNext,
+  MdVolumeUp,
+  MdVolumeOff,
 } from "react-icons/md";
 import { connect } from "react-redux";
 
@@ -16,6 +18,7 @@ const MediaButtons = ({
   player,
   isPlaying,
   isShuffleActive,
+  isMuted,
   previousSong,
   currentSong,
   nextSong,
@@ -97,6 +100,11 @@ const MediaButtons = ({
             onClick={handleClickShuffle}
           />
         )}
+        {player.isMuted ? (
+          <MdVolumeOff onClick={() => isMuted(false)} />
+        ) : (
+          <MdVolumeUp onClick={() => isMuted(true)} />
+        )}
       </div>
   );
 };
@@ -115,6 +123,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({ type: "player/isShuffleActive", payload }),
     isShuffleLoading: (payload) =>
       dispatch({ type: "player/isShuffleLoading", payload }),
+    isMuted: (payload) => dispatch({ type: "player/isMuted", payload }),
     previousSong: (payload) =>
       dispatch({ type: "player/previousSong", payload }),
     currentSong: (payload) => dispatch({ type: "player/currentSong", payload }),

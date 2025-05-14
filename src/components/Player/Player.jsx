@@ -62,6 +62,14 @@ const Player = ({
       : playerRef.current.internalPlayer.pauseVideo();
   }, [player.isPlaying]);
 
+  useEffect(() => {
+    if (player.isMuted) {
+      playerRef.current.internalPlayer.mute();
+    } else {
+      playerRef.current.internalPlayer.unMute();
+    }
+  }, [player.isMuted]);
+
   const onReady = (e) => {
     // if(player.isPlaying){
 

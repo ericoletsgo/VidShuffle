@@ -17,6 +17,7 @@ const Playlist = ({
   currentSong,
   nextSong,
   addSongs,
+  isMuted,
 }) => {
   const { id } = useParams();
   const [hint, setHint] = useState(null);
@@ -70,14 +71,20 @@ const Playlist = ({
     }
   }, [player.isShuffleActive, songs]);
 
+  const handleMute = useCallback(() => {
+    isMuted(!player.isMuted);
+    showHint(player.isMuted ? "Unmuted" : "Muted");
+  }, [player.isMuted]);
+
   const keyMap = useMemo(
     () => ({
       Space: handlePlayPause,
       ArrowLeft: handlePrev,
       ArrowRight: handleNext,
       KeyS: handleShuffle,
+      KeyM: handleMute,
     }),
-    [handlePlayPause, handlePrev, handleNext, handleShuffle]
+    [handlePlayPause, handlePrev, handleNext, handleShuffle, handleMute]
   );
 
   useKeyboardShortcuts(keyMap);
@@ -115,6 +122,7 @@ const mapDispatchToProps = (dispatch) => ({
   currentSong: (payload) => dispatch({ type: "player/currentSong", payload }),
   nextSong: (payload) => dispatch({ type: "player/nextSong", payload }),
   addSongs: (payload) => dispatch({ type: "songs/addSongs", payload }),
+  isMuted: (payload) => dispatch({ type: "player/isMuted", payload }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Playlist);
