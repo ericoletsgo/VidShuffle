@@ -1,21 +1,30 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import Card from "./card/Card";
 import MediaButtons from "./MediaButtons/MediaButtons";
 import Player from "./Player/Player";
 import PlayingRightNow from "./PlayingRightNow";
+import KeyboardHint from "./KeyboardHint";
 import useKeyboardShortcuts from "../hooks/useKeyboardShortcuts";
 
 const Playlist = ({
   songs,
   player,
   isPlaying,
+  isShuffleActive,
   previousSong,
   currentSong,
   nextSong,
+  addSongs,
 }) => {
   const { id } = useParams();
+  const [hint, setHint] = useState(null);
+
+  const showHint = useCallback((msg) => {
+    setHint(null);
+    requestAnimationFrame(() => setHint(msg));
+  }, []);
 
   const handlePrev = useCallback(() => {
     const currIndex = songs.findIndex(
@@ -25,6 +34,7 @@ const Playlist = ({
       previousSong(songs[currIndex - 2]?.snippet.resourceId.videoId);
       currentSong(songs[currIndex - 1]?.snippet.resourceId.videoId);
       nextSong(songs[currIndex]?.snippet.resourceId.videoId);
+      showHint("Previous");
     }
   }, [songs, player.currentSong]);
 
@@ -36,26 +46,45 @@ const Playlist = ({
       previousSong(songs[currIndex]?.snippet.resourceId.videoId);
       currentSong(songs[currIndex + 1]?.snippet.resourceId.videoId);
       nextSong(songs[currIndex + 2]?.snippet.resourceId.videoId);
+      showHint("Next");
     }
   }, [songs, player.currentSong]);
 
   const handlePlayPause = useCallback(() => {
     isPlaying(!player.isPlaying);
+    showHint(player.isPlaying ? "Paused" : "Playing");
   }, [player.isPlaying]);
+
+  const handleShuffle = useCallback(() => {
+    if (!player.isShuffleActive) {
+      isShuffleActive(true);
+      showHint("Shuffle On");
+    } else {
+      isShuffleActive(false);
+      let unShuffleArr = [...songs];
+      unShuffleArr.sort((a, b) => a.snippet.position - b.snippet.position);
+      addSongs(unShuffleArr);
+      currentSong(unShuffleArr[0].snippet.resourceId.videoId);
+      nextSong(unShuffleArr[1].snippet.resourceId.videoId);
+      showHint("Shuffle Off");
+    }
+  }, [player.isShuffleActive, songs]);
 
   const keyMap = useMemo(
     () => ({
       Space: handlePlayPause,
       ArrowLeft: handlePrev,
       ArrowRight: handleNext,
+      KeyS: handleShuffle,
     }),
-    [handlePlayPause, handlePrev, handleNext]
+    [handlePlayPause, handlePrev, handleNext, handleShuffle]
   );
 
   useKeyboardShortcuts(keyMap);
 
   return (
     <div className="container">
+      <KeyboardHint message={hint} />
       <div className="mainContent">
         <Player />
         <div className="playerContainer">
@@ -79,10 +108,13 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   isPlaying: (payload) => dispatch({ type: "player/isPlaying", payload }),
+  isShuffleActive: (payload) =>
+    dispatch({ type: "player/isShuffleActive", payload }),
   previousSong: (payload) =>
     dispatch({ type: "player/previousSong", payload }),
   currentSong: (payload) => dispatch({ type: "player/currentSong", payload }),
   nextSong: (payload) => dispatch({ type: "player/nextSong", payload }),
+  addSongs: (payload) => dispatch({ type: "songs/addSongs", payload }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Playlist);
