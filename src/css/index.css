@@ -139,6 +139,13 @@ iframe {
   cursor: not-allowed;
 }
 
+.errorMsg {
+  color: #d32f2f;
+  font-size: 1.1rem;
+  margin: 0.5rem 1rem;
+  font-weight: 400;
+}
+
 @keyframes hintFadeIn {
   from {
     opacity: 0;

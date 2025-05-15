@@ -7,10 +7,12 @@ import { fetchData } from "./utils/fetchData";
 const Search = ({ addSongs, currentSong, nextSong, addToPlaylistDetails }) => {
   const [playlistId, setPlaylistId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     console.log(playlistId);
 
     const regex = /list=([a-zA-Z0-9_-]+)/;
@@ -19,15 +21,20 @@ const Search = ({ addSongs, currentSong, nextSong, addToPlaylistDetails }) => {
 
     setLoading(true);
 
-    const data = await fetchData(id);
+    try {
+      const data = await fetchData(id);
 
-    setLoading(false);
-    addToPlaylistDetails(data.playlistDetailsObject);
-    addSongs(data.responseArrToAdd);
-    currentSong(data.currentSong);
-    nextSong(data.nextSong);
+      setLoading(false);
+      addToPlaylistDetails(data.playlistDetailsObject);
+      addSongs(data.responseArrToAdd);
+      currentSong(data.currentSong);
+      nextSong(data.nextSong);
 
-    navigate(`/playlist/${id}`);
+      navigate(`/playlist/${id}`);
+    } catch (err) {
+      setLoading(false);
+      setError("Couldn't load that playlist. Check the URL and try again.");
+    }
   };
 
   const handleChange = (e) => {
@@ -51,6 +58,7 @@ const Search = ({ addSongs, currentSong, nextSong, addToPlaylistDetails }) => {
           {loading ? <span className="spinner" /> : "Submit"}
         </button>
       </form>
+      {error && <p className="errorMsg">{error}</p>}
     </div>
   );
 };
