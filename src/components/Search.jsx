@@ -6,6 +6,7 @@ import { fetchData } from "./utils/fetchData";
 
 const Search = ({ addSongs, currentSong, nextSong, addToPlaylistDetails }) => {
   const [playlistId, setPlaylistId] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -16,10 +17,11 @@ const Search = ({ addSongs, currentSong, nextSong, addToPlaylistDetails }) => {
     const match = playlistId.match(regex);
     const id = match ? match[1] : playlistId;
 
-    //https://www.youtube.com/playlist?list=PLi06ybkpczJDt0Ydo3Umjtv97bDOcCtAZ
+    setLoading(true);
 
     const data = await fetchData(id);
 
+    setLoading(false);
     addToPlaylistDetails(data.playlistDetailsObject);
     addSongs(data.responseArrToAdd);
     currentSong(data.currentSong);
@@ -45,8 +47,8 @@ const Search = ({ addSongs, currentSong, nextSong, addToPlaylistDetails }) => {
           value={playlistId}
           placeholder="playlist url or playlist ID"
         />
-        <button className="submitBtn" type="submit">
-          Submit
+        <button className="submitBtn" type="submit" disabled={loading}>
+          {loading ? <span className="spinner" /> : "Submit"}
         </button>
       </form>
     </div>
