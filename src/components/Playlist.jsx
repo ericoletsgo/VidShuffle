@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import Card from "./card/Card";
@@ -21,6 +21,16 @@ const Playlist = ({
 }) => {
   const { id } = useParams();
   const [hint, setHint] = useState(null);
+
+  useEffect(() => {
+    const currIndex = songs.findIndex(
+      (s) => s.snippet?.resourceId.videoId === player.currentSong
+    );
+    if (currIndex >= 0) {
+      document.title = songs[currIndex].snippet.title + " - VidShuffle";
+    }
+    return () => { document.title = "VidShuffle"; };
+  }, [player.currentSong, songs]);
 
   const showHint = useCallback((msg) => {
     setHint(null);
