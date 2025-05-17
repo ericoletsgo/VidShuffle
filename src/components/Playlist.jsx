@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import Card from "./card/Card";
@@ -6,6 +6,7 @@ import MediaButtons from "./MediaButtons/MediaButtons";
 import Player from "./Player/Player";
 import PlayingRightNow from "./PlayingRightNow";
 import KeyboardHint from "./KeyboardHint";
+import ProgressBar from "./ProgressBar";
 import useKeyboardShortcuts from "../hooks/useKeyboardShortcuts";
 
 const Playlist = ({
@@ -21,6 +22,7 @@ const Playlist = ({
 }) => {
   const { id } = useParams();
   const [hint, setHint] = useState(null);
+  const playerRef = useRef(null);
 
   useEffect(() => {
     const currIndex = songs.findIndex(
@@ -103,11 +105,12 @@ const Playlist = ({
     <div className="container">
       <KeyboardHint message={hint} />
       <div className="mainContent">
-        <Player />
+        <Player playerRef={playerRef} />
         <div className="playerContainer">
           <Card />
         </div>
       </div>
+      <ProgressBar playerRef={playerRef} />
       <div>
         <PlayingRightNow />
       </div>

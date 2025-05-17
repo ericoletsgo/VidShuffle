@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useEffect } from "react";
 import YouTube from "react-youtube";
 import { connect } from "react-redux";
 
@@ -9,9 +9,8 @@ const Player = ({
   previousSong,
   currentSong,
   nextSong,
+  playerRef,
 }) => {
-  const playerRef = useRef(null);
-
   const opts = {
     height: "100%",
     width: "100%",
@@ -24,7 +23,6 @@ const Player = ({
 
   useEffect(() => {
     if (songs) {
-      console.log("999999999", songs[0]?.snippet);
       currentSong(songs[0]?.snippet.resourceId.videoId);
     }
   }, []);
@@ -44,18 +42,6 @@ const Player = ({
     }
   };
 
-  // useEffect(() => {
-  //   console.log('==== USEEFFECTTTTT====== ',songs.findIndex(ele => ele.snippet.resourceId.videoId === player.currentSong))
-  //   console.log("==LENGTHHHHHplayyyyer ", songs.length -1);
-
-  //   console.log("PLAYER REF", playerRef);
-  // }, [player]);
-
-  const handlePlay = () => {
-    playerRef.current.internalPlayer.playVideo();
-    // playerStatus()
-  };
-
   useEffect(() => {
     player.isPlaying === true
       ? playerRef.current.internalPlayer.playVideo()
@@ -71,34 +57,17 @@ const Player = ({
   }, [player.isMuted]);
 
   const onReady = (e) => {
-    // if(player.isPlaying){
-
     e.target.playVideo();
-    // }
   };
 
   const onStateChange = (e) => {
-    // states
-    // -1 (unstarted)
-    // 0 (ended)
-    // 1 (playing)
-    // 2 (paused)
-    // 3 (buffering)
-    // 5 (video cued).
-
-    //DURATION OF VIDEO
-    console.log("DURATION  ", e.target.getDuration());
-    console.log("CURRENT dURATIO  ", e.target.getCurrentTime());
-
     if (e.data === 0) {
-      // isPlaying(false);
       if (
         songs.findIndex(
           (ele) => ele.snippet.resourceId.videoId === player.currentSong
         ) ===
         songs.length - 1
       ) {
-        console.log("Playlist Ended");
         isPlaying(false);
       } else afterSongEnds();
     } else if (e.data === 2) {
@@ -110,7 +79,7 @@ const Player = ({
   return (
     <div className="player">
       <YouTube
-      className="youtubePlayer"
+        className="youtubePlayer"
         videoId={player.currentSong}
         opts={opts}
         ref={playerRef}

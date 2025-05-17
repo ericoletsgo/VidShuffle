@@ -146,6 +146,38 @@ iframe {
   font-weight: 400;
 }
 
+.progressContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 1rem;
+  margin-top: 0.3rem;
+}
+
+.progressBar {
+  flex: 1;
+  height: 6px;
+  background: #ddd;
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+}
+
+.progressFill {
+  height: 100%;
+  background: #007bff;
+  border-radius: 3px;
+  transition: width 0.3s linear;
+}
+
+.progressTime {
+  font-size: 0.85rem;
+  color: #666;
+  min-width: 3rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
 @keyframes hintFadeIn {
   from {
     opacity: 0;
