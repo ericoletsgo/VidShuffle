@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 
 const ProgressBar = ({ player, playerRef }) => {
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const barRef = useRef(null);
 
   useEffect(() => {
     if (!player.isPlaying) return;
@@ -37,10 +38,20 @@ const ProgressBar = ({ player, playerRef }) => {
     return `${m}:${s.toString().padStart(2, "0")}`;
   };
 
+  const handleClick = (e) => {
+    if (!barRef.current || duration === 0) return;
+    const rect = barRef.current.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    const seekTo = pct * duration;
+    playerRef.current.internalPlayer.seekTo(seekTo, true);
+    setCurrentTime(seekTo);
+    setProgress(pct * 100);
+  };
+
   return (
     <div className="progressContainer">
       <span className="progressTime">{formatTime(currentTime)}</span>
-      <div className="progressBar">
+      <div className="progressBar" ref={barRef} onClick={handleClick}>
         <div className="progressFill" style={{ width: `${progress}%` }} />
       </div>
       <span className="progressTime">{formatTime(duration)}</span>
