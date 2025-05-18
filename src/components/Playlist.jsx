@@ -88,6 +88,18 @@ const Playlist = ({
     showHint(player.isMuted ? "Unmuted" : "Muted");
   }, [player.isMuted]);
 
+  const handleFullscreen = useCallback(() => {
+    const playerEl = document.querySelector(".player");
+    if (!playerEl) return;
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+      showHint("Exit Fullscreen");
+    } else {
+      playerEl.requestFullscreen();
+      showHint("Fullscreen");
+    }
+  }, []);
+
   const keyMap = useMemo(
     () => ({
       Space: handlePlayPause,
@@ -95,8 +107,9 @@ const Playlist = ({
       ArrowRight: handleNext,
       KeyS: handleShuffle,
       KeyM: handleMute,
+      KeyF: handleFullscreen,
     }),
-    [handlePlayPause, handlePrev, handleNext, handleShuffle, handleMute]
+    [handlePlayPause, handlePrev, handleNext, handleShuffle, handleMute, handleFullscreen]
   );
 
   useKeyboardShortcuts(keyMap);
@@ -115,7 +128,7 @@ const Playlist = ({
         <PlayingRightNow />
       </div>
       <div className="mediaButtonsContainer">
-        <MediaButtons />
+        <MediaButtons onFullscreen={handleFullscreen} />
       </div>
     </div>
   );

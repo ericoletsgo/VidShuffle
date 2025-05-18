@@ -10,6 +10,8 @@ import {
   MdSkipNext,
   MdVolumeUp,
   MdVolumeOff,
+  MdFullscreen,
+  MdFullscreenExit,
 } from "react-icons/md";
 import { connect } from "react-redux";
 
@@ -19,6 +21,7 @@ const MediaButtons = ({
   isPlaying,
   isShuffleActive,
   isMuted,
+  onFullscreen,
   previousSong,
   currentSong,
   nextSong,
@@ -104,6 +107,11 @@ const MediaButtons = ({
           <MdVolumeOff onClick={() => isMuted(false)} />
         ) : (
           <MdVolumeUp onClick={() => isMuted(true)} />
+        )}
+        {document.fullscreenElement ? (
+          <MdFullscreenExit onClick={onFullscreen} />
+        ) : (
+          <MdFullscreen onClick={onFullscreen} />
         )}
       </div>
   );
