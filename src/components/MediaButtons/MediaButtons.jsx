@@ -12,6 +12,8 @@ import {
   MdVolumeOff,
   MdFullscreen,
   MdFullscreenExit,
+  MdRepeat,
+  MdRepeatOn,
 } from "react-icons/md";
 import { connect } from "react-redux";
 
@@ -21,6 +23,7 @@ const MediaButtons = ({
   isPlaying,
   isShuffleActive,
   isMuted,
+  isRepeat,
   onFullscreen,
   previousSong,
   currentSong,
@@ -108,6 +111,11 @@ const MediaButtons = ({
         ) : (
           <MdVolumeUp onClick={() => isMuted(true)} />
         )}
+        {player.isRepeat ? (
+          <MdRepeatOn onClick={() => isRepeat(false)} />
+        ) : (
+          <MdRepeat onClick={() => isRepeat(true)} />
+        )}
         {document.fullscreenElement ? (
           <MdFullscreenExit onClick={onFullscreen} />
         ) : (
@@ -132,6 +140,7 @@ const mapDispatchToProps = (dispatch) => {
     isShuffleLoading: (payload) =>
       dispatch({ type: "player/isShuffleLoading", payload }),
     isMuted: (payload) => dispatch({ type: "player/isMuted", payload }),
+    isRepeat: (payload) => dispatch({ type: "player/isRepeat", payload }),
     previousSong: (payload) =>
       dispatch({ type: "player/previousSong", payload }),
     currentSong: (payload) => dispatch({ type: "player/currentSong", payload }),

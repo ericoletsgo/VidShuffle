@@ -5,6 +5,7 @@ const initialState = {
   nextSong: "",
   isShuffleActive: false,
   isMuted: false,
+  isRepeat: false,
 };
 
 export default function playerRedicer(state = initialState, action) {
@@ -26,6 +27,9 @@ export default function playerRedicer(state = initialState, action) {
     }
     case "player/isMuted": {
       return { ...state, isMuted: action.payload };
+    }
+    case "player/isRepeat": {
+      return { ...state, isRepeat: action.payload };
     }
     default:
       return state;

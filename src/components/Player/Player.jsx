@@ -68,7 +68,13 @@ const Player = ({
         ) ===
         songs.length - 1
       ) {
-        isPlaying(false);
+        if (player.isRepeat) {
+          currentSong(songs[0]?.snippet.resourceId.videoId);
+          nextSong(songs[1]?.snippet.resourceId.videoId);
+          previousSong("");
+        } else {
+          isPlaying(false);
+        }
       } else afterSongEnds();
     } else if (e.data === 2) {
       isPlaying(false);

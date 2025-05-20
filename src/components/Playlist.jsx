@@ -88,6 +88,11 @@ const Playlist = ({
     showHint(player.isMuted ? "Unmuted" : "Muted");
   }, [player.isMuted]);
 
+  const handleRepeat = useCallback(() => {
+    isRepeat(!player.isRepeat);
+    showHint(player.isRepeat ? "Repeat Off" : "Repeat On");
+  }, [player.isRepeat]);
+
   const handleFullscreen = useCallback(() => {
     const playerEl = document.querySelector(".player");
     if (!playerEl) return;
@@ -107,9 +112,10 @@ const Playlist = ({
       ArrowRight: handleNext,
       KeyS: handleShuffle,
       KeyM: handleMute,
+      KeyR: handleRepeat,
       KeyF: handleFullscreen,
     }),
-    [handlePlayPause, handlePrev, handleNext, handleShuffle, handleMute, handleFullscreen]
+    [handlePlayPause, handlePrev, handleNext, handleShuffle, handleMute, handleRepeat, handleFullscreen]
   );
 
   useKeyboardShortcuts(keyMap);
@@ -149,6 +155,7 @@ const mapDispatchToProps = (dispatch) => ({
   nextSong: (payload) => dispatch({ type: "player/nextSong", payload }),
   addSongs: (payload) => dispatch({ type: "songs/addSongs", payload }),
   isMuted: (payload) => dispatch({ type: "player/isMuted", payload }),
+  isRepeat: (payload) => dispatch({ type: "player/isRepeat", payload }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Playlist);
