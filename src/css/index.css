@@ -81,9 +81,16 @@ h1 {
   font-size: 5rem;
   cursor: pointer;
 }
+.player {
+  position: relative;
+  width: 100%;
+  max-width: 690px;
+}
+
 iframe {
-  width: 690px;
-  height: 420px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
 }
 
 .player:fullscreen {
