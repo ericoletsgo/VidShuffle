@@ -105,6 +105,35 @@ iframe {
   height: 100vh;
 }
 
+.ulListCards {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cardContent {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border-left: 3px solid transparent;
+}
+
+.cardContent:hover {
+  background-color: rgba(0, 123, 255, 0.06);
+}
+
+.cardContent.playing {
+  background-color: rgba(0, 123, 255, 0.1);
+  border-left-color: #007bff;
+}
+
+.cardContent img {
+  border-radius: 4px;
+}
+
 .cardText {
   font-size: 1.3rem;
   cursor: pointer;
