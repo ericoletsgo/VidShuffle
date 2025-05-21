@@ -136,6 +136,8 @@ iframe {
 
 .mainContent {
   display: flex;
+  gap: 1rem;
+  padding: 0 1rem;
 }
 
 .spinner {
@@ -195,6 +197,48 @@ iframe {
   min-width: 3rem;
   text-align: center;
   font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    flex-direction: column;
+    padding: 0 0.5rem;
+  }
+
+  .player {
+    max-width: 100%;
+  }
+
+  .cardContainer {
+    max-height: 250px;
+    margin: 0.5rem 0;
+  }
+
+  .mediaButtons {
+    font-size: 3rem;
+    justify-content: center;
+    display: flex;
+    gap: 0.3rem;
+  }
+
+  .songTitle {
+    font-size: 1.4rem;
+    padding: 0 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .inputSearch {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 1rem 0;
+  }
+
+  .playlistUsed {
+    flex-wrap: wrap;
+  }
 }
 
 @keyframes hintFadeIn {
