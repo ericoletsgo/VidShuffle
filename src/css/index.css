@@ -48,6 +48,13 @@ h1 {
   line-height: 1.3;
   word-spacing: 0.4rem;
 }
+.trackPosition {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-left: 0.8rem;
+}
+
 .cardTitle {
   font-size: 1.4rem;
   font-weight: 500;

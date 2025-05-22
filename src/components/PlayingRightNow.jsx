@@ -5,9 +5,11 @@ const PlayingRightNow = ({player, songs}) => {
   const currIndex = songs.findIndex((ele) => {
     return ele.snippet?.resourceId.videoId === player.currentSong;
   });
-  console.log('PLAYERRR', currIndex)
   return (
-    <div className='songTitle'>{songs[currIndex].snippet.title}</div>
+    <div className='songTitle'>
+      {songs[currIndex]?.snippet.title}
+      <span className='trackPosition'>{currIndex + 1} / {songs.length}</span>
+    </div>
   )
 }
 
