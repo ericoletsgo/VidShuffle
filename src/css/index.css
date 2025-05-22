@@ -77,6 +77,29 @@ h1 {
 }
 /* Typography */
 
+.themeToggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.6rem;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text);
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.themeToggle:hover {
+  background: var(--card-hover);
+}
+
 .inputSearch {
   font-size: 1.4rem;
   padding: 0.5rem 1rem;
