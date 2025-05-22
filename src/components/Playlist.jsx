@@ -29,7 +29,7 @@ const Playlist = ({
       (s) => s.snippet?.resourceId.videoId === player.currentSong
     );
     if (currIndex >= 0) {
-      document.title = songs[currIndex].snippet.title + " - VidShuffle";
+      document.title = `(${currIndex + 1}/${songs.length}) ${songs[currIndex].snippet.title} - VidShuffle`;
     }
     return () => { document.title = "VidShuffle"; };
   }, [player.currentSong, songs]);
