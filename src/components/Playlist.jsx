@@ -93,6 +93,26 @@ const Playlist = ({
     showHint(player.isRepeat ? "Repeat Off" : "Repeat On");
   }, [player.isRepeat]);
 
+  const handleVolumeUp = useCallback(() => {
+    if (!playerRef.current) return;
+    const p = playerRef.current.internalPlayer;
+    p.getVolume().then((vol) => {
+      const next = Math.min(vol + 5, 100);
+      p.setVolume(next);
+      showHint("Volume " + next + "%");
+    });
+  }, []);
+
+  const handleVolumeDown = useCallback(() => {
+    if (!playerRef.current) return;
+    const p = playerRef.current.internalPlayer;
+    p.getVolume().then((vol) => {
+      const next = Math.max(vol - 5, 0);
+      p.setVolume(next);
+      showHint("Volume " + next + "%");
+    });
+  }, []);
+
   const handleFullscreen = useCallback(() => {
     const playerEl = document.querySelector(".player");
     if (!playerEl) return;
@@ -114,8 +134,10 @@ const Playlist = ({
       KeyM: handleMute,
       KeyR: handleRepeat,
       KeyF: handleFullscreen,
+      ArrowUp: handleVolumeUp,
+      ArrowDown: handleVolumeDown,
     }),
-    [handlePlayPause, handlePrev, handleNext, handleShuffle, handleMute, handleRepeat, handleFullscreen]
+    [handlePlayPause, handlePrev, handleNext, handleShuffle, handleMute, handleRepeat, handleFullscreen, handleVolumeUp, handleVolumeDown]
   );
 
   useKeyboardShortcuts(keyMap);
