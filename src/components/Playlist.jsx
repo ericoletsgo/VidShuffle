@@ -7,6 +7,7 @@ import Player from "./Player/Player";
 import PlayingRightNow from "./PlayingRightNow";
 import KeyboardHint from "./KeyboardHint";
 import ProgressBar from "./ProgressBar";
+import ShortcutsHelp from "./ShortcutsHelp";
 import useKeyboardShortcuts from "../hooks/useKeyboardShortcuts";
 
 const Playlist = ({
@@ -22,6 +23,7 @@ const Playlist = ({
 }) => {
   const { id } = useParams();
   const [hint, setHint] = useState(null);
+  const [showHelp, setShowHelp] = useState(false);
   const playerRef = useRef(null);
 
   useEffect(() => {
@@ -113,6 +115,10 @@ const Playlist = ({
     });
   }, []);
 
+  const handleHelp = useCallback(() => {
+    setShowHelp((prev) => !prev);
+  }, []);
+
   const handleFullscreen = useCallback(() => {
     const playerEl = document.querySelector(".player");
     if (!playerEl) return;
@@ -136,8 +142,9 @@ const Playlist = ({
       KeyF: handleFullscreen,
       ArrowUp: handleVolumeUp,
       ArrowDown: handleVolumeDown,
+      "?": handleHelp,
     }),
-    [handlePlayPause, handlePrev, handleNext, handleShuffle, handleMute, handleRepeat, handleFullscreen, handleVolumeUp, handleVolumeDown]
+    [handlePlayPause, handlePrev, handleNext, handleShuffle, handleMute, handleRepeat, handleFullscreen, handleVolumeUp, handleVolumeDown, handleHelp]
   );
 
   useKeyboardShortcuts(keyMap);
@@ -145,6 +152,7 @@ const Playlist = ({
   return (
     <div className="container">
       <KeyboardHint message={hint} />
+      <ShortcutsHelp visible={showHelp} onClose={() => setShowHelp(false)} />
       <div className="mainContent">
         <Player playerRef={playerRef} />
         <div className="playerContainer">
