@@ -10,6 +10,8 @@ const shortcuts = [
   ["M", "Toggle mute"],
   ["R", "Toggle repeat"],
   ["F", "Fullscreen"],
+  ["Ctrl+←", "Seek back 5s"],
+  ["Ctrl+→", "Seek forward 5s"],
   ["?", "Show shortcuts"],
 ];
 

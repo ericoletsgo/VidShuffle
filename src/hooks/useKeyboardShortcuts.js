@@ -6,7 +6,8 @@ export default function useKeyboardShortcuts(handlers) {
       if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
       if (document.hidden) return;
 
-      const fn = handlers[e.code] || handlers[e.key];
+      const prefix = e.ctrlKey || e.metaKey ? "ctrl+" : "";
+      const fn = handlers[prefix + e.code] || handlers[prefix + e.key] || (!prefix && (handlers[e.code] || handlers[e.key]));
       if (fn) {
         e.preventDefault();
         fn();

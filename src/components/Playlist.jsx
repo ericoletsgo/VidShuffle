@@ -115,6 +115,24 @@ const Playlist = ({
     });
   }, []);
 
+  const handleSeekForward = useCallback(() => {
+    if (!playerRef.current) return;
+    const p = playerRef.current.internalPlayer;
+    p.getCurrentTime().then((t) => {
+      p.seekTo(t + 5, true);
+      showHint("+5s");
+    });
+  }, []);
+
+  const handleSeekBack = useCallback(() => {
+    if (!playerRef.current) return;
+    const p = playerRef.current.internalPlayer;
+    p.getCurrentTime().then((t) => {
+      p.seekTo(Math.max(t - 5, 0), true);
+      showHint("-5s");
+    });
+  }, []);
+
   const handleHelp = useCallback(() => {
     setShowHelp((prev) => !prev);
   }, []);
@@ -142,9 +160,11 @@ const Playlist = ({
       KeyF: handleFullscreen,
       ArrowUp: handleVolumeUp,
       ArrowDown: handleVolumeDown,
+      "ctrl+ArrowRight": handleSeekForward,
+      "ctrl+ArrowLeft": handleSeekBack,
       "?": handleHelp,
     }),
-    [handlePlayPause, handlePrev, handleNext, handleShuffle, handleMute, handleRepeat, handleFullscreen, handleVolumeUp, handleVolumeDown, handleHelp]
+    [handlePlayPause, handlePrev, handleNext, handleShuffle, handleMute, handleRepeat, handleFullscreen, handleVolumeUp, handleVolumeDown, handleSeekForward, handleSeekBack, handleHelp]
   );
 
   useKeyboardShortcuts(keyMap);
