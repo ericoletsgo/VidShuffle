@@ -1,19 +1,25 @@
-import React from 'react'
-import {AiFillYoutube} from 'react-icons/ai'
-import Search from './Search'
-import { useNavigate } from 'react-router-dom'
+import React from "react";
+import { AiFillYoutube } from "react-icons/ai";
+import { useNavigate, useLocation } from "react-router-dom";
+
 const Navbar = () => {
-const navigate = useNavigate();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
-  const handleClick = () => {
-    navigate(`/`);
-  }
   return (
-    <div className='navbar'>
-      <button onClick={handleClick}>Home</button>
-      <div>Navbar Playlist Shuffle <AiFillYoutube /></div>
-    </div>
-  )
-}
+    <nav className="navbar">
+      <div className="navBrand" onClick={() => navigate("/")}>
+        <AiFillYoutube className="navIcon" />
+        <span>VidShuffle</span>
+      </div>
+      {!isHome && (
+        <button className="navHomeBtn" onClick={() => navigate("/")}>
+          Home
+        </button>
+      )}
+    </nav>
+  );
+};
 
-export default Navbar
+export default Navbar;

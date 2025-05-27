@@ -1,12 +1,14 @@
 import { Route, Routes } from "react-router-dom";
 import "./css/index.css";
 import Home from "./components/Home";
+import Navbar from "./components/Navbar";
 import Playlist from "./components/Playlist";
 import ThemeToggle from "./components/ThemeToggle";
 
 function App() {
   return (
     <div className="App">
+      <Navbar />
       <ThemeToggle />
       <Routes>
         <Route exact path="/" element={<Home />} />
