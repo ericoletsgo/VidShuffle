@@ -12,6 +12,7 @@ const shortcuts = [
   ["F", "Fullscreen"],
   ["Ctrl+←", "Seek back 5s"],
   ["Ctrl+→", "Seek forward 5s"],
+  ["0-9", "Jump to 0%-90%"],
   ["?", "Show shortcuts"],
 ];
 

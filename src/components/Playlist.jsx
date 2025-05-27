@@ -133,6 +133,16 @@ const Playlist = ({
     });
   }, []);
 
+  const handleNumberSeek = useCallback((num) => {
+    if (!playerRef.current) return;
+    const p = playerRef.current.internalPlayer;
+    p.getDuration().then((dur) => {
+      const target = (num / 10) * dur;
+      p.seekTo(target, true);
+      showHint(num * 10 + "%");
+    });
+  }, []);
+
   const handleHelp = useCallback(() => {
     setShowHelp((prev) => !prev);
   }, []);
@@ -149,6 +159,15 @@ const Playlist = ({
     }
   }, []);
 
+  const digitHandlers = useMemo(() => {
+    const map = {};
+    for (let i = 0; i <= 9; i++) {
+      map["Digit" + i] = () => handleNumberSeek(i);
+      map["Numpad" + i] = () => handleNumberSeek(i);
+    }
+    return map;
+  }, [handleNumberSeek]);
+
   const keyMap = useMemo(
     () => ({
       Space: handlePlayPause,
@@ -163,8 +182,9 @@ const Playlist = ({
       "ctrl+ArrowRight": handleSeekForward,
       "ctrl+ArrowLeft": handleSeekBack,
       "?": handleHelp,
+      ...digitHandlers,
     }),
-    [handlePlayPause, handlePrev, handleNext, handleShuffle, handleMute, handleRepeat, handleFullscreen, handleVolumeUp, handleVolumeDown, handleSeekForward, handleSeekBack, handleHelp]
+    [handlePlayPause, handlePrev, handleNext, handleShuffle, handleMute, handleRepeat, handleFullscreen, handleVolumeUp, handleVolumeDown, handleSeekForward, handleSeekBack, handleHelp, digitHandlers]
   );
 
   useKeyboardShortcuts(keyMap);
