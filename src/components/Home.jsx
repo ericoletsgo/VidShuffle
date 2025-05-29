@@ -5,7 +5,7 @@ import Search from "./Search";
 const Home = () => {
   return (
     <div className="home">
-      <h1>Playlist Shuffle</h1>
+      <h1>VidShuffle</h1>
       <Search />
       <PlaylistUsed />
     </div>
