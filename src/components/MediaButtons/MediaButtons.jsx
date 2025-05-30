@@ -79,47 +79,33 @@ const MediaButtons = ({
     }
   };
   return (
-      <div className="mediaButtons ">
-        <MdOutlineSkipPrevious onClick={handleClickPreviousButton} />
-        {/* <MdSkipPrevious /> */}
-        {player.isPlaying === true ? (
-          <MdPauseCircleOutline
-            className="   "
-            onClick={() => playPauseButton(false)}
-          />
+      <div className="mediaButtons">
+        <MdOutlineSkipPrevious aria-label="Previous" onClick={handleClickPreviousButton} />
+        {player.isPlaying ? (
+          <MdPauseCircleOutline aria-label="Pause" onClick={() => playPauseButton(false)} />
         ) : (
-          <MdPlayCircleOutline
-            className=" "
-            onClick={() => playPauseButton(true)}
-          />
+          <MdPlayCircleOutline aria-label="Play" onClick={() => playPauseButton(true)} />
         )}
-        <MdOutlineSkipNext onClick={handleClickNextButton} />
-        {/* <MdSkipNext /> */}
+        <MdOutlineSkipNext aria-label="Next" onClick={handleClickNextButton} />
         {player.isShuffleActive ? (
-          <MdOutlineShuffleOn
-            className=""
-            onClick={handleClickShuffle}
-          />
+          <MdOutlineShuffleOn aria-label="Shuffle off" onClick={handleClickShuffle} />
         ) : (
-          <MdOutlineShuffle
-            className=" "
-            onClick={handleClickShuffle}
-          />
+          <MdOutlineShuffle aria-label="Shuffle on" onClick={handleClickShuffle} />
         )}
         {player.isMuted ? (
-          <MdVolumeOff onClick={() => isMuted(false)} />
+          <MdVolumeOff aria-label="Unmute" onClick={() => isMuted(false)} />
         ) : (
-          <MdVolumeUp onClick={() => isMuted(true)} />
+          <MdVolumeUp aria-label="Mute" onClick={() => isMuted(true)} />
         )}
         {player.isRepeat ? (
-          <MdRepeatOn onClick={() => isRepeat(false)} />
+          <MdRepeatOn aria-label="Repeat off" onClick={() => isRepeat(false)} />
         ) : (
-          <MdRepeat onClick={() => isRepeat(true)} />
+          <MdRepeat aria-label="Repeat on" onClick={() => isRepeat(true)} />
         )}
         {document.fullscreenElement ? (
-          <MdFullscreenExit onClick={onFullscreen} />
+          <MdFullscreenExit aria-label="Exit fullscreen" onClick={onFullscreen} />
         ) : (
-          <MdFullscreen onClick={onFullscreen} />
+          <MdFullscreen aria-label="Fullscreen" onClick={onFullscreen} />
         )}
       </div>
   );
