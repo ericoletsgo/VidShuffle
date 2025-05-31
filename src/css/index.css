@@ -131,6 +131,35 @@ h1 {
   background: var(--card-hover);
 }
 
+.home {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.sectionHeading {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin: 1.5rem 0 0.5rem;
+}
+
+.playlistUsedSection {
+  margin-top: 0.5rem;
+}
+
+.usedContent {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+}
+
+.usedContent img {
+  border-radius: 4px;
+  max-width: 80px;
+}
+
 .notFound {
   text-align: center;
   padding: 4rem 1rem;

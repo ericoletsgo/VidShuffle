@@ -10,55 +10,45 @@ const PlaylistUsed = ({
   nextSong,
   deleteFromPlaylistDetails,
 }) => {
-  console.log("maaap  ", playlistDetails);
   const navigate = useNavigate();
 
   const handleClick = async (id) => {
-    console.log("eeeee  ", id);
-
     const data = await fetchData(id);
     addSongs(data.responseArrToAdd);
     currentSong(data.currentSong);
     nextSong(data.nextSong);
-
     navigate(`/playlist/${id}`);
   };
 
-  const deleteFromPlaylist = (id) => {
-    
-    console.log(id);
-    deleteFromPlaylistDetails(id)
-  };
+  if (!playlistDetails || playlistDetails.length === 0) return null;
 
   return (
-    <div className="playlistUsed">
-      {playlistDetails ? (
-        playlistDetails.map((element) => (
-          <div className="playlistUsed" key={element.playlistId}>
-            <div
-              onClick={() => handleClick(element.playlistId)}
-              
-              className="usedContent"
-            >
-              <img src={element.PlaylistImage} height="auto" width="auto" />
-              <p className="usedPlaylistName">{element.playlistName}</p>
-            </div>
-            <button className="playlistUsedButton" onClick={() => deleteFromPlaylist(element.playlistId)}>
-              X
-            </button>
+    <div className="playlistUsedSection">
+      <h3 className="sectionHeading">Recent Playlists</h3>
+      {playlistDetails.map((element) => (
+        <div className="playlistUsed" key={element.playlistId}>
+          <div
+            onClick={() => handleClick(element.playlistId)}
+            className="usedContent"
+          >
+            <img src={element.PlaylistImage} height="auto" width="auto" />
+            <p className="usedPlaylistName">{element.playlistName}</p>
           </div>
-        ))
-      ) : (
-        <p>No Playlist Used</p>
-      )}
+          <button
+            className="playlistUsedButton"
+            aria-label="Remove playlist"
+            onClick={() => deleteFromPlaylistDetails(element.playlistId)}
+          >
+            X
+          </button>
+        </div>
+      ))}
     </div>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
-    songs: state.songs,
-    player: state.player,
     playlistDetails: state.playlistDetails,
   };
 };
@@ -68,9 +58,6 @@ const mapDispatchToProps = (dispatch) => {
     addSongs: (payload) => dispatch({ type: "songs/addSongs", payload }),
     currentSong: (payload) => dispatch({ type: "player/currentSong", payload }),
     nextSong: (payload) => dispatch({ type: "player/nextSong", payload }),
-    addToPlaylistDetails: (payload) =>
-      dispatch({ type: "playlistDetails/addToPlaylistDetails", payload }),
-
     deleteFromPlaylistDetails: (payload) =>
       dispatch({ type: "playlistDetails/deleteFromPlaylistDetails", payload }),
   };
