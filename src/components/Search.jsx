@@ -13,7 +13,6 @@ const Search = ({ addSongs, currentSong, nextSong, addToPlaylistDetails }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    console.log(playlistId);
 
     const regex = /list=([a-zA-Z0-9_-]+)/;
     const match = playlistId.match(regex);
