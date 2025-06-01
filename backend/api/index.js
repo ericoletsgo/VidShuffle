@@ -8,16 +8,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// API Base URL, API Key
 const baseApiUrl = "https://www.googleapis.com/youtube/v3";
 const apiKey = process.env.YOUTUBE_API_KEY;
 
-// Root route to handle '/'
+const playlistCache = {};
+
 app.get("/", (req, res) => {
   res.send("Backend is running!");
 });
 
-// Endpoint to fetch playlist details and items
 app.get("/api/playlist", async (req, res) => {
   const { playlistId } = req.query;
 
@@ -25,8 +24,12 @@ app.get("/api/playlist", async (req, res) => {
     return res.status(400).json({ error: "Playlist ID is required" });
   }
 
+  const clientEtag = req.headers["if-none-match"];
+  if (clientEtag && playlistCache[playlistId]?.etag === clientEtag) {
+    return res.status(304).end();
+  }
+
   try {
-    // fetch details
     const playlistDetailsResponse = await axios.get(`${baseApiUrl}/playlists`, {
       params: {
         part: "snippet",
@@ -37,7 +40,6 @@ app.get("/api/playlist", async (req, res) => {
 
     const playlistDetails = playlistDetailsResponse.data.items[0];
 
-    // Fetch playlist items
     let playlistItems = [];
     let nextToken = "";
 
@@ -56,7 +58,11 @@ app.get("/api/playlist", async (req, res) => {
       nextToken = playlistItemsResponse.data.nextPageToken || "";
     } while (nextToken);
 
-    // Send to frontend
+    const etag = playlistDetailsResponse.data.etag || Date.now().toString();
+
+    playlistCache[playlistId] = { etag };
+
+    res.set("ETag", etag);
     res.json({
       playlistDetails,
       playlistItems,
@@ -67,7 +73,6 @@ app.get("/api/playlist", async (req, res) => {
   }
 });
 
-// serverless
 if (require.main === module) {
   const PORT = 5000;
   app.listen(PORT, () => {
