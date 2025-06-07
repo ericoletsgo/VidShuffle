@@ -9,6 +9,7 @@ import KeyboardHint from "./KeyboardHint";
 import ProgressBar from "./ProgressBar";
 import ShortcutsHelp from "./ShortcutsHelp";
 import useKeyboardShortcuts from "../hooks/useKeyboardShortcuts";
+import InsightsPanel from "./Insights/InsightsPanel";
 
 const Playlist = ({
   songs,
@@ -206,6 +207,7 @@ const Playlist = ({
       <div className="mediaButtonsContainer">
         <MediaButtons onFullscreen={handleFullscreen} />
       </div>
+      <InsightsPanel songs={songs} />
     </div>
   );
 };
