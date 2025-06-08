@@ -292,6 +292,33 @@ iframe {
 .cardText {
   font-size: 1.3rem;
   cursor: pointer;
+  flex: 1;
+}
+
+.cardInsightBtn {
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  font-weight: 600;
+  font-style: italic;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s;
+}
+
+.cardInsightBtn:hover {
+  background: var(--card-hover);
+  color: var(--accent);
+}
+
+.cardInsightExpanded {
+  padding: 0.5rem 0.8rem 0.5rem 4rem;
+  border-left: 3px solid var(--accent);
+  background: var(--card-hover);
 }
 
 .playlistUsed {
