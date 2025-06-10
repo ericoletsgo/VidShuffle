@@ -1,12 +1,36 @@
 import os
 import json
+import re
 
 import vertexai
-from vertexai.generative_models import GenerativeModel
+from vertexai.generative_models import GenerativeModel, GenerationConfig
 
 vertexai.init(project=os.getenv("GOOGLE_CLOUD_PROJECT"), location="us-central1")
 
 model = GenerativeModel("gemini-1.5-flash")
+json_config = GenerationConfig(
+    response_mime_type="application/json",
+    temperature=0.3,
+)
+
+
+def parse_json(text):
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        match = re.search(r"\{[\s\S]*\}", text)
+        if match:
+            try:
+                return json.loads(match.group())
+            except json.JSONDecodeError:
+                pass
+        match = re.search(r"\[[\s\S]*\]", text)
+        if match:
+            try:
+                return json.loads(match.group())
+            except json.JSONDecodeError:
+                pass
+    return None
 
 
 def summarize_video(title: str, transcript: str) -> dict:
@@ -20,11 +44,11 @@ Transcript:
 
 Respond in JSON with keys: summary, topics, takeaways"""
 
-    response = model.generate_content(prompt)
-    try:
-        return json.loads(response.text)
-    except json.JSONDecodeError:
-        return {"summary": response.text, "topics": [], "takeaways": []}
+    response = model.generate_content(prompt, generation_config=json_config)
+    result = parse_json(response.text)
+    if result:
+        return result
+    return {"summary": response.text, "topics": [], "takeaways": []}
 
 
 def summarize_playlist(videos: list[dict]) -> dict:
@@ -38,15 +62,15 @@ def summarize_playlist(videos: list[dict]) -> dict:
 Provide:
 1. A playlist overview (what this playlist is about)
 2. Main themes across all videos
-3. A suggested watch order with reasoning (which videos to watch first based on topic flow)
+3. A suggested watch order with reasoning (which videos to watch first based on topic flow, each item should have title and reason)
 
 Respond in JSON with keys: overview, themes, watch_order"""
 
-    response = model.generate_content(prompt)
-    try:
-        return json.loads(response.text)
-    except json.JSONDecodeError:
-        return {"overview": response.text, "themes": [], "watch_order": []}
+    response = model.generate_content(prompt, generation_config=json_config)
+    result = parse_json(response.text)
+    if result:
+        return result
+    return {"overview": response.text, "themes": [], "watch_order": []}
 
 
 def search_transcripts(query: str, transcripts: dict[str, str]) -> list[dict]:
@@ -61,8 +85,8 @@ Find the most relevant sections from these video transcripts:
 
 Return the top 3-5 most relevant results as JSON array with keys: video_id, relevance_snippet, score (0-100)"""
 
-    response = model.generate_content(prompt)
-    try:
-        return json.loads(response.text)
-    except json.JSONDecodeError:
-        return []
+    response = model.generate_content(prompt, generation_config=json_config)
+    result = parse_json(response.text)
+    if isinstance(result, list):
+        return result
+    return []
