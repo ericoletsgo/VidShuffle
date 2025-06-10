@@ -2,6 +2,15 @@ import axios from "axios";
 
 const AGENT_URL = import.meta.env.VITE_AGENT_URL || "http://localhost:8000";
 
+export const checkAgentHealth = async () => {
+  try {
+    const res = await axios.get(`${AGENT_URL}/health`, { timeout: 3000 });
+    return res.data.status === "ok";
+  } catch {
+    return false;
+  }
+};
+
 export const getVideoInsight = async (videoId, title) => {
   const res = await axios.post(`${AGENT_URL}/insight/video`, {
     video_id: videoId,
