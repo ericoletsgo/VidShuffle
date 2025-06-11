@@ -9,9 +9,11 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const hasAny = videos.some((v) => v.transcript);
-    if (!hasAny) {
-      return res.status(404).json({ error: "No transcripts available" });
+    const hasData = videos.some(
+      (v) => v.transcript || v.description || v.tags?.length
+    );
+    if (!hasData) {
+      return res.status(404).json({ error: "No video data available" });
     }
 
     const analysis = await analyzePlaylist(videos);
