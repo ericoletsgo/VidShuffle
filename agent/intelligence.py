@@ -5,6 +5,8 @@ import re
 import vertexai
 from vertexai.generative_models import GenerativeModel, GenerationConfig
 
+from cache import insight_cache
+
 vertexai.init(project=os.getenv("GOOGLE_CLOUD_PROJECT"), location="us-central1")
 
 model = GenerativeModel("gemini-1.5-flash")
@@ -33,7 +35,12 @@ def parse_json(text):
     return None
 
 
-def summarize_video(title: str, transcript: str) -> dict:
+def summarize_video(title: str, transcript: str, video_id: str = "") -> dict:
+    cache_key = f"video:{video_id or title}"
+    cached = insight_cache.get(cache_key)
+    if cached:
+        return cached
+
     prompt = f"""Given this YouTube video titled "{title}" with the following transcript, provide:
 1. A 2-3 sentence summary
 2. 3-5 key topics covered
@@ -47,8 +54,11 @@ Respond in JSON with keys: summary, topics, takeaways"""
     response = model.generate_content(prompt, generation_config=json_config)
     result = parse_json(response.text)
     if result:
+        insight_cache.set(cache_key, result)
         return result
-    return {"summary": response.text, "topics": [], "takeaways": []}
+    fallback = {"summary": response.text, "topics": [], "takeaways": []}
+    insight_cache.set(cache_key, fallback)
+    return fallback
 
 
 def summarize_playlist(videos: list[dict]) -> dict:

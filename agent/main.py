@@ -58,7 +58,7 @@ async def video_insight(req: VideoInsightRequest):
     transcript = await loop.run_in_executor(executor, get_transcript, req.video_id)
     if not transcript:
         raise HTTPException(status_code=404, detail="Transcript not available")
-    result = await loop.run_in_executor(executor, summarize_video, req.title, transcript)
+    result = await loop.run_in_executor(executor, summarize_video, req.title, transcript, req.video_id)
     return {"video_id": req.video_id, **result}
 
 
