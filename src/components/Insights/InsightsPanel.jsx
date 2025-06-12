@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PlaylistOverview from "./PlaylistOverview";
 import PlaylistSearch from "./PlaylistSearch";
-import { checkAgentHealth } from "../utils/agentApi";
 
 const TABS = [
   { key: "overview", label: "Overview" },
@@ -10,11 +9,6 @@ const TABS = [
 
 const InsightsPanel = ({ songs }) => {
   const [activeTab, setActiveTab] = useState("overview");
-  const [agentOnline, setAgentOnline] = useState(null);
-
-  useEffect(() => {
-    checkAgentHealth().then(setAgentOnline);
-  }, []);
 
   if (!songs || songs.length === 0) return null;
 
@@ -22,9 +16,6 @@ const InsightsPanel = ({ songs }) => {
     <div className="insightsPanel">
       <div className="insightsTabs">
         <span className="insightsTitle">Playlist Intelligence</span>
-        <span className={`agentStatus ${agentOnline ? "online" : "offline"}`}>
-          {agentOnline === null ? "" : agentOnline ? "Agent Online" : "Agent Offline"}
-        </span>
         {TABS.map((tab) => (
           <button
             key={tab.key}
@@ -36,17 +27,8 @@ const InsightsPanel = ({ songs }) => {
         ))}
       </div>
       <div className="insightsContent">
-        {!agentOnline && agentOnline !== null && (
-          <p className="agentOfflineMsg">
-            The intelligence agent is not running. Start it with: uvicorn main:app --reload
-          </p>
-        )}
-        {agentOnline && activeTab === "overview" && (
-          <PlaylistOverview songs={songs} />
-        )}
-        {agentOnline && activeTab === "search" && (
-          <PlaylistSearch songs={songs} />
-        )}
+        {activeTab === "overview" && <PlaylistOverview songs={songs} />}
+        {activeTab === "search" && <PlaylistSearch songs={songs} />}
       </div>
     </div>
   );

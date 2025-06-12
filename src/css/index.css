@@ -529,31 +529,6 @@ iframe {
   color: var(--heading);
 }
 
-.agentStatus {
-  font-size: 0.75rem;
-  padding: 0.2rem 0.5rem;
-  border-radius: 10px;
-  align-self: center;
-  margin-right: auto;
-}
-
-.agentStatus.online {
-  color: #2e7d32;
-  background: rgba(46, 125, 50, 0.1);
-}
-
-.agentStatus.offline {
-  color: #c62828;
-  background: rgba(198, 40, 40, 0.1);
-}
-
-.agentOfflineMsg {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  text-align: center;
-  padding: 1rem;
-}
-
 .insightsTabs {
   display: flex;
   align-items: center;
