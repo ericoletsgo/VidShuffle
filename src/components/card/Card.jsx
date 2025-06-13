@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import MersenneTwister from "mersenne-twister";
-import VideoInsight from "../Insights/VideoInsight";
 
 const Card = ({
   songs,
@@ -56,53 +55,30 @@ const Card = ({
     nextSong(songs[currIndex + 1]?.snippet.resourceId.videoId);
   };
 
-  const [expandedInsight, setExpandedInsight] = useState(null);
-
-  const toggleInsight = (e, videoId) => {
-    e.stopPropagation();
-    setExpandedInsight(expandedInsight === videoId ? null : videoId);
-  };
-
   const song = songs?.map((ele) =>
     ele.snippet.title !== "Private video" &&
     ele.snippet.title !== "Deleted video" ? (
-      <React.Fragment key={ele.snippet.resourceId.videoId + ele.snippet.title}>
-        <li
-          ref={refs[ele.snippet.resourceId.videoId]}
-          id={`${ele.snippet.resourceId.videoId}`}
-          className={`cardContent ${
-            player.currentSong === ele.snippet.resourceId.videoId ? "playing" : ""
-          }`}
-          onClick={() => handleClick(ele.snippet.resourceId.videoId)}
-        >
-          <img
-            src={ele.snippet.thumbnails.default?.url}
-            alt="song image"
-            height="50px"
-            width="auto"
-          />
-          <div className="cardText">
-            <label className="cardTitle">{ele.snippet.title}</label>
-            <br />
-            <p className="cardArtist"> {ele.snippet.videoOwnerChannelTitle}</p>
-          </div>
-          <button
-            className="cardInsightBtn"
-            onClick={(e) => toggleInsight(e, ele.snippet.resourceId.videoId)}
-            title="Video insights"
-          >
-            i
-          </button>
-        </li>
-        {expandedInsight === ele.snippet.resourceId.videoId && (
-          <li className="cardInsightExpanded">
-            <VideoInsight
-              videoId={ele.snippet.resourceId.videoId}
-              title={ele.snippet.title}
-            />
-          </li>
-        )}
-      </React.Fragment>
+      <li
+        ref={refs[ele.snippet.resourceId.videoId]}
+        id={`${ele.snippet.resourceId.videoId}`}
+        className={`cardContent ${
+          player.currentSong === ele.snippet.resourceId.videoId ? "playing" : ""
+        }`}
+        onClick={() => handleClick(ele.snippet.resourceId.videoId)}
+        key={ele.snippet.resourceId.videoId + ele.snippet.title}
+      >
+        <img
+          src={ele.snippet.thumbnails.default?.url}
+          alt="song image"
+          height="50px"
+          width="auto"
+        />
+        <div className="cardText">
+          <label className="cardTitle">{ele.snippet.title}</label>
+          <br />
+          <p className="cardArtist"> {ele.snippet.videoOwnerChannelTitle}</p>
+        </div>
+      </li>
     ) : null
   );
 
