@@ -589,6 +589,16 @@ iframe {
 .insightLoading {
   color: var(--text-secondary);
   font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0;
+}
+
+.overviewText {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 0.8rem;
 }
 
 .overviewContent h4 {
@@ -607,9 +617,25 @@ iframe {
   line-height: 1.4;
 }
 
+.watchOrderList {
+  margin: 0.3rem 0;
+  padding-left: 1.2rem;
+}
+
+.watchOrderList li {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.watchTitle {
+  font-weight: 500;
+  display: block;
+}
+
 .watchReason {
   color: var(--text-secondary);
   font-size: 0.85rem;
+  display: block;
 }
 
 .topicTags {
@@ -630,20 +656,68 @@ iframe {
 .videoSummary {
   margin: 0.3rem 0;
   line-height: 1.5;
-}
-
-.takeawayList {
-  margin: 0.4rem 0;
-  padding-left: 1.2rem;
-}
-
-.takeawayList li {
-  margin-bottom: 0.2rem;
   font-size: 0.9rem;
 }
 
-.videoInsightContent {
-  padding: 0.3rem 0;
+.videosInsightList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.videoInsightCard {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
+  background: var(--input-bg);
+}
+
+.videoInsightHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.videoInsightTitle {
+  font-weight: 500;
+  font-size: 0.95rem;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.difficultyBadge {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 8px;
+  font-weight: 500;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.difficultyBadge.beginner {
+  background: rgba(46, 125, 50, 0.1);
+  color: #2e7d32;
+}
+
+.difficultyBadge.intermediate {
+  background: rgba(245, 166, 35, 0.15);
+  color: #e68900;
+}
+
+.difficultyBadge.advanced {
+  background: rgba(198, 40, 40, 0.1);
+  color: #c62828;
+}
+
+.prereqText {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0.3rem 0 0;
+  font-style: italic;
 }
 
 .searchInsightForm {
