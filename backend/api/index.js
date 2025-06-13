@@ -4,7 +4,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const { getTranscript, getTranscripts } = require("./transcript");
-const { summarizeVideo, summarizePlaylist, searchTranscripts } = require("./intelligence");
+const { analyzePlaylist, searchTranscripts } = require("./intelligence");
 
 const app = express();
 
@@ -76,50 +76,33 @@ app.get("/api/playlist", async (req, res) => {
   }
 });
 
-app.get("/api/transcript/:videoId", async (req, res) => {
-  try {
-    const text = await getTranscript(req.params.videoId);
-    if (!text) return res.status(404).json({ error: "Transcript not available" });
-    res.json({ video_id: req.params.videoId, transcript: text });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch transcript" });
-  }
-});
-
-app.post("/api/insight/video", async (req, res) => {
-  const { video_id, title } = req.body;
-  if (!video_id || !title) return res.status(400).json({ error: "video_id and title required" });
-
-  try {
-    const transcript = await getTranscript(video_id);
-    if (!transcript) return res.status(404).json({ error: "Transcript not available" });
-    const result = await summarizeVideo(title, transcript);
-    res.json({ video_id, ...result });
-  } catch (error) {
-    console.error("Video insight error:", error);
-    res.status(500).json({ error: "Failed to generate insight" });
-  }
-});
-
-app.post("/api/insight/playlist", async (req, res) => {
+app.post("/api/analyze", async (req, res) => {
   const { videos } = req.body;
-  if (!videos) return res.status(400).json({ error: "videos array required" });
+  if (!videos || !Array.isArray(videos)) {
+    return res.status(400).json({ error: "videos array required" });
+  }
 
   try {
-    for (const video of videos) {
-      if (!video.summary) {
-        const transcript = await getTranscript(video.video_id);
-        if (transcript) {
-          const info = await summarizeVideo(video.title || "", transcript);
-          video.summary = info.summary || "";
-        }
-      }
+    // grab transcripts for up to 15 videos in parallel batches
+    const capped = videos.slice(0, 15);
+    const ids = capped.map((v) => v.video_id);
+    const transcripts = await getTranscripts(ids);
+
+    const withTranscripts = capped.map((v) => ({
+      ...v,
+      transcript: transcripts[v.video_id] || null,
+    }));
+
+    const hasAny = withTranscripts.some((v) => v.transcript);
+    if (!hasAny) {
+      return res.status(404).json({ error: "No transcripts available for this playlist" });
     }
-    const result = await summarizePlaylist(videos);
-    res.json(result);
+
+    const analysis = await analyzePlaylist(withTranscripts);
+    res.json(analysis);
   } catch (error) {
-    console.error("Playlist insight error:", error);
-    res.status(500).json({ error: "Failed to generate playlist insight" });
+    console.error("Analyze error:", error.message || error);
+    res.status(500).json({ error: error.message || "Analysis failed" });
   }
 });
 
@@ -128,15 +111,15 @@ app.post("/api/search", async (req, res) => {
   if (!query || !video_ids) return res.status(400).json({ error: "query and video_ids required" });
 
   try {
-    const transcripts = await getTranscripts(video_ids);
+    const transcripts = await getTranscripts(video_ids.slice(0, 15));
     const filtered = Object.fromEntries(
       Object.entries(transcripts).filter(([, v]) => v)
     );
     const results = await searchTranscripts(query, filtered);
     res.json({ results });
   } catch (error) {
-    console.error("Search error:", error);
-    res.status(500).json({ error: "Search failed" });
+    console.error("Search error:", error.message || error);
+    res.status(500).json({ error: error.message || "Search failed" });
   }
 });
 
