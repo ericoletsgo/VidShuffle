@@ -2,15 +2,54 @@ import axios from "axios";
 
 const BASE_URL = "https://vid-shuffle.vercel.app/api";
 
-export const analyzePlaylist = async (videos) => {
-  const res = await axios.post(`${BASE_URL}/analyze`, { videos }, { timeout: 60000 });
+async function fetchTranscriptBatch(videoIds) {
+  const res = await axios.post(
+    `${BASE_URL}/transcripts`,
+    { video_ids: videoIds },
+    { timeout: 15000 }
+  );
+  return res.data.transcripts;
+}
+
+export const analyzePlaylist = async (videos, onProgress) => {
+  // fetch transcripts in batches of 5
+  const allTranscripts = {};
+  for (let i = 0; i < videos.length; i += 5) {
+    const batch = videos.slice(i, i + 5);
+    const ids = batch.map((v) => v.video_id);
+    if (onProgress) onProgress(`Fetching transcripts ${i + 1}-${Math.min(i + 5, videos.length)}...`);
+    try {
+      const transcripts = await fetchTranscriptBatch(ids);
+      Object.assign(allTranscripts, transcripts);
+    } catch {
+      // skip failed batches
+    }
+  }
+
+  // attach transcripts to videos
+  const withTranscripts = videos.map((v) => ({
+    ...v,
+    transcript: allTranscripts[v.video_id] || null,
+  }));
+
+  const hasAny = withTranscripts.some((v) => v.transcript);
+  if (!hasAny) throw new Error("No transcripts available");
+
+  if (onProgress) onProgress("Analyzing with AI...");
+
+  const res = await axios.post(
+    `${BASE_URL}/analyze`,
+    { videos: withTranscripts },
+    { timeout: 30000 }
+  );
   return res.data;
 };
 
 export const searchPlaylist = async (query, videoIds) => {
-  const res = await axios.post(`${BASE_URL}/search`, {
-    query,
-    video_ids: videoIds,
-  }, { timeout: 30000 });
+  const res = await axios.post(
+    `${BASE_URL}/search`,
+    { query, video_ids: videoIds },
+    { timeout: 30000 }
+  );
   return res.data.results;
 };

@@ -5,6 +5,7 @@ import PlaylistSearch from "./PlaylistSearch";
 const InsightsPanel = ({ songs }) => {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState("");
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -13,6 +14,7 @@ const InsightsPanel = ({ songs }) => {
 
     setLoading(true);
     setError("");
+    setProgress("Starting analysis...");
 
     const videos = songs
       .filter(
@@ -25,7 +27,7 @@ const InsightsPanel = ({ songs }) => {
         title: s.snippet.title,
       }));
 
-    analyzePlaylist(videos)
+    analyzePlaylist(videos, setProgress)
       .then((data) => setAnalysis(data))
       .catch(() => setError("Could not analyze playlist"))
       .finally(() => setLoading(false));
@@ -57,7 +59,7 @@ const InsightsPanel = ({ songs }) => {
       <div className="insightsContent">
         {loading && (
           <div className="insightLoading">
-            <span className="spinner" /> Analyzing transcripts...
+            <span className="spinner" /> {progress}
           </div>
         )}
         {error && <p className="errorMsg">{error}</p>}
