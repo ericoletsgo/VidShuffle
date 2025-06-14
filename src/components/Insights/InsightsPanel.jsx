@@ -29,7 +29,10 @@ const InsightsPanel = ({ songs }) => {
 
     analyzePlaylist(videos, setProgress)
       .then((data) => setAnalysis(data))
-      .catch(() => setError("Could not analyze playlist"))
+      .catch((err) => {
+        const msg = err?.response?.data?.error || err?.message || "Unknown error";
+        setError("Analysis failed: " + msg);
+      })
       .finally(() => setLoading(false));
   }, [songs]);
 
