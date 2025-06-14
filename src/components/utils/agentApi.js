@@ -26,21 +26,25 @@ export const analyzePlaylist = async (videos, onProgress) => {
     }
   }
 
-  // attach transcripts to videos
-  const withTranscripts = videos.map((v) => ({
-    ...v,
-    transcript: allTranscripts[v.video_id] || null,
-  }));
+  // attach truncated transcripts to keep payload small
+  const withTranscripts = videos
+    .map((v) => ({
+      video_id: v.video_id,
+      title: v.title,
+      transcript: allTranscripts[v.video_id]
+        ? allTranscripts[v.video_id].slice(0, 1500)
+        : null,
+    }))
+    .filter((v) => v.transcript);
 
-  const hasAny = withTranscripts.some((v) => v.transcript);
-  if (!hasAny) throw new Error("No transcripts available");
+  if (withTranscripts.length === 0) throw new Error("No transcripts available");
 
   if (onProgress) onProgress("Analyzing with AI...");
 
   const res = await axios.post(
     `${BASE_URL}/analyze`,
     { videos: withTranscripts },
-    { timeout: 30000 }
+    { timeout: 60000 }
   );
   return res.data;
 };
