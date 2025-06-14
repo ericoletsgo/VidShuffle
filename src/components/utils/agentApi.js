@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://vid-shuffle.vercel.app/api";
+const BASE_URL = "/api";
 
 async function fetchTranscriptBatch(videoIds) {
   const res = await axios.post(

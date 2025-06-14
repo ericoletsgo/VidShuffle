@@ -3,7 +3,7 @@ import axios from "axios";
 const cache = {};
 
 export const fetchData = async (id) => {
-  const baseApiUrl = "https://vid-shuffle.vercel.app/api";
+  const baseApiUrl = "/api";
   const cacheKey = id;
 
   const headers = {};
