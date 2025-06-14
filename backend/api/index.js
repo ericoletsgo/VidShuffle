@@ -83,14 +83,17 @@ app.post("/api/analyze", async (req, res) => {
   }
 
   try {
-    // grab transcripts for up to 15 videos in parallel batches
-    const capped = videos.slice(0, 15);
+    // free tier has 10s limit, keep it tight
+    const capped = videos.slice(0, 5);
     const ids = capped.map((v) => v.video_id);
-    const transcripts = await getTranscripts(ids);
 
-    const withTranscripts = capped.map((v) => ({
+    // fetch all transcripts in parallel
+    const transcriptPromises = ids.map((id) => getTranscript(id));
+    const transcriptResults = await Promise.all(transcriptPromises);
+
+    const withTranscripts = capped.map((v, i) => ({
       ...v,
-      transcript: transcripts[v.video_id] || null,
+      transcript: transcriptResults[i] || null,
     }));
 
     const hasAny = withTranscripts.some((v) => v.transcript);
@@ -111,7 +114,11 @@ app.post("/api/search", async (req, res) => {
   if (!query || !video_ids) return res.status(400).json({ error: "query and video_ids required" });
 
   try {
-    const transcripts = await getTranscripts(video_ids.slice(0, 15));
+    const sliced = video_ids.slice(0, 5);
+    const transcriptPromises = sliced.map((id) => getTranscript(id));
+    const results = await Promise.all(transcriptPromises);
+    const transcripts = {};
+    sliced.forEach((id, i) => { transcripts[id] = results[i]; });
     const filtered = Object.fromEntries(
       Object.entries(transcripts).filter(([, v]) => v)
     );

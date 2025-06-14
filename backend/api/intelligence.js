@@ -30,13 +30,13 @@ async function analyzePlaylist(videos) {
   const model = getModel();
 
   const videoList = videos
-    .map((v, i) => `${i + 1}. "${v.title}" (${v.video_id}):\n${(v.transcript || "").slice(0, 2000)}`)
+    .map((v, i) => `${i + 1}. "${v.title}" (${v.video_id}):\n${(v.transcript || "").slice(0, 1500)}`)
     .join("\n\n");
 
   const prompt = `You are analyzing a YouTube playlist. For each video, I have the title and transcript excerpt. Provide a comprehensive analysis.
 
 Videos:
-${videoList.slice(0, 25000)}
+${videoList.slice(0, 10000)}
 
 Respond in JSON with these keys:
 - overview: 2-3 sentences about what this playlist covers
