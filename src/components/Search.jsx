@@ -46,8 +46,6 @@ const Search = ({ addSongs, currentSong, nextSong, addToPlaylistDetails }) => {
       <form onSubmit={(e) => handleSubmit(e)}>
         <input
         className="inputSearch"
-          pattern="^(https?://)?(www\.)?youtube\.com/playlist\?list=PL[a-zA-Z0-9_\-]+$|^(PL[a-zA-Z0-9_\-]+)$"
-          title="Please enter a valid YouTube playlist URL or ID"
           type="text"
           autoFocus
           onChange={(e) => handleChange(e)}
